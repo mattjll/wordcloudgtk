@@ -6,16 +6,6 @@ from ConfigParser import SafeConfigParser
 import nltk
 import datetime
 
-##*impliment?*##
-#include the number of word instances in the per word images? - as an option obviously
-#locations/files - semi done
-#multithread the imagemaker bits - it aint hard and then the buttons won't freeze
-#should probably make 2 image containers so if we have a word count and a pos count
-# then we can show one on top of the other.
-#add file menus and/or settings button (and settings window obviously)
-#/USR/SHARE/WORDCLOUD FOR IMAGES AND CONFIG FILES?
-
-
 commonwords = ""
 workingdir = os.getcwd()
 config_file = "/home/matt/Installs/wordcounter.cfg"
@@ -85,7 +75,6 @@ def get_savefldr(savefldr_but):
 		parser.set('general', 'savefldr', savefldr_result)
 		with open(config_file, 'wb') as parserfile:
 			parser.write(parserfile)
-		#set label - but cant see label as above
 		savefldr_txt.set_text(savefldr_result)
 		
 	savefldr_choose.destroy()
@@ -183,12 +172,8 @@ def imgen_activate(imgen_but):
 	os.chdir(workingdir)
 	statusbar.push(context_id, "Done making your word cloud!")
 	
-	#check if image is above a size (e.g. 1000x1000) and if so then no display?
-	#or maybe just compress it to fit window
 	newmontage = gtk.gdk.pixbuf_new_from_file(uhome + "/" + img_outname)
-	#if above then resize
-	#w works in principle - needs refining
-	#could have a while loop so it all ends up under 1000?
+
 	pbx,pby = newmontage.get_width(),newmontage.get_height()
 	if pbx > 2000 or pby > 2000:
 		newmontage = newmontage.scale_simple(int(pbx/2.5),int(pby/2.5),gtk.gdk.INTERP_BILINEAR)
@@ -203,7 +188,6 @@ def imgen_activate(imgen_but):
 		newmontage = newmontage.scale_simple(int(pbx/1.3),int(pby/1.3),gtk.gdk.INTERP_BILINEAR)
 		pbx,pby = newmontage.get_width(),newmontage.get_height()
 	
-	#
 	imgen_image.set_from_pixbuf(newmontage)
 	print "x: ",pbx,"y: ",pby
 	imgenset = True
@@ -275,20 +259,14 @@ def posgen_activate(pos_but):
 		pos_outname = "montage_pos-" + ctime + ".png"
 	
 	print imagestring_pos
-	#os.system("convert " + imagestring + " +append -quality 80 finalcloud.jpg")
 	os.system("montage " + imagestring_pos + " -tile 6x -geometry +5+5 $HOME/" + pos_outname)
 	#works but the sizes for the first images needs tweaking!
 	
 	print "posDONE"
 	os.chdir(workingdir)
 	statusbar.push(context_id, "Done making your POS cloud!")
-	
-	#check if image is above a size (e.g. 1000x1000) and if so then no display?
-	#or maybe just compress it to fit window
+
 	newposmontage = gtk.gdk.pixbuf_new_from_file(uhome + "/" + pos_outname)
-	#if above then resize
-	#w works in principle - needs refining
-	#could have a while loop so it all ends up under 1000?
 	pbmx,pbmy = newposmontage.get_width(),newposmontage.get_height()
 	if pbmx > 2000 or pbmy > 2000:
 		newposmontage = newposmontage.scale_simple(int(pbmx/2.5),int(pbmy/2.5),gtk.gdk.INTERP_BILINEAR)
